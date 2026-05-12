@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="帶媽咪去大阪">
+<meta name="theme-color" content="#FFB7C5">
+<title>帶媽咪去大阪吃吃喝喝～</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{font-family:'Hiragino Sans','Noto Sans TC','Segoe UI',sans-serif;background:#FFF8F0;min-height:100vh;overflow-x:hidden;}
+  .app{max-width:480px;margin:0 auto;min-height:100vh;position:relative;padding-bottom:80px;}
+
+  /* Header */
+  .header{background:linear-gradient(135deg,#FFB7C5,#FFCF9C);padding:18px 18px 14px;position:relative;overflow:hidden;border-bottom:2.5px solid #2d2d2d;}
+  .header-inner{display:flex;align-items:center;gap:10;position:relative;z-index:1;}
+  .header-emoji{font-size:30px;margin-right:10px;}
+  .header-title{font-size:16px;font-weight:800;color:#2d2d2d;line-height:1.3;}
+  .header-sub{font-size:11px;color:#5a3e2b;font-weight:500;margin-top:2px;}
+
+  /* Cards */
+  .card{background:white;border-radius:18px;border:2.5px solid #2d2d2d;box-shadow:4px 4px 0 #2d2d2d;padding:15px;margin-bottom:12px;position:relative;}
+  .card-blue{background:linear-gradient(135deg,#E8F4FD,#fff);}
+  .card-yellow{background:#FFFBF0;}
+  .card-pink{background:linear-gradient(135deg,#FFE8F5,#FFF5E0);}
+
+  /* Content */
+  .content{padding:14px 13px;}
+
+  /* Section title */
+  .sec-title{display:flex;align-items:center;gap:8px;margin-bottom:14px;}
+  .sec-title span{font-size:18px;font-weight:800;color:#2d2d2d;}
+
+  /* Day tabs */
+  .day-tabs{display:flex;gap:8px;overflow-x:auto;margin-bottom:10px;padding-bottom:4px;-webkit-overflow-scrolling:touch;}
+  .day-tabs::-webkit-scrollbar{display:none;}
+  .day-tab{flex-shrink:0;padding:6px 13px;border-radius:20px;border:2px solid #2d2d2d;font-weight:700;font-size:12px;cursor:pointer;background:white;box-shadow:1px 1px 0 #ccc;transition:all .15s;text-align:center;line-height:1.4;}
+  .day-tab.active{background:#FFB7C5;box-shadow:2px 2px 0 #2d2d2d;}
+
+  /* Weather */
+  .weather-bar{display:flex;align-items:center;gap:12px;background:#E8F7FF;border:2px solid #2d2d2d;border-radius:14px;padding:8px 13px;margin-bottom:10px;box-shadow:3px 3px 0 #2d2d2d;}
+  .weather-icon{font-size:26px;}
+  .weather-info{font-size:13px;line-height:1.5;}
+
+  /* Spot cards */
+  .spot-card{display:flex;align-items:flex-start;gap:11px;}
+  .spot-icon{font-size:26px;padding-top:2px;flex-shrink:0;}
+  .spot-body{flex:1;min-width:0;}
+  .spot-name{font-weight:700;font-size:14px;line-height:1.3;}
+  .spot-time{font-size:12px;color:#888;margin-top:2px;}
+  .spot-note{font-size:12px;color:#555;margin-top:3px;line-height:1.4;}
+  .spot-transport{font-size:11px;color:#5599BB;margin-top:5px;background:#EEF7FF;border:1.5px solid #AADDFF;border-radius:8px;padding:3px 8px;display:inline-block;line-height:1.5;}
+  .spot-del{background:none;border:none;cursor:pointer;font-size:18px;color:#ddd;flex-shrink:0;padding:0 2px;}
+
+  /* Flight/hotel */
+  .info-label{font-size:12px;color:#888;line-height:1.9;}
+  .info-section{font-weight:700;font-size:12px;margin-bottom:2px;}
+  .divider{border-top:1.5px dashed #eee;margin:8px 0;}
+  .nav-btn{display:inline-block;margin-top:8px;background:#FFB7C5;color:#2d2d2d;border:2px solid #2d2d2d;border-radius:20px;padding:5px 15px;font-size:12px;font-weight:700;text-decoration:none;box-shadow:2px 2px 0 #2d2d2d;}
+
+  /* Translate mode buttons */
+  .mode-btn{flex:1;padding:7px 4px;font-size:11px;font-weight:700;border-radius:10px;border:2px solid #2d2d2d;cursor:pointer;background:white;box-shadow:1px 1px 0 #ddd;font-family:inherit;transition:all .15s;}
+  .active-mode{background:#FFB7C5;box-shadow:2px 2px 0 #2d2d2d;}
+
+  /* Translate */
+  textarea{width:100%;padding:10px 12px;border-radius:10px;border:2px solid #ddd;font-size:14px;resize:vertical;font-family:inherit;height:90px;}
+  .btn-primary{width:100%;margin-top:8px;padding:11px;border-radius:12px;border:2.5px solid #2d2d2d;background:#FFB7C5;font-weight:700;font-size:14px;cursor:pointer;box-shadow:3px 3px 0 #2d2d2d;font-family:inherit;}
+  .btn-orange{background:#FFCF9C;}
+  .btn-outline{background:white;border:2px solid #aaa;box-shadow:none;}
+  .btn-sm{flex:1;border-radius:12px;padding:9px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px;}
+  .result-box{margin-top:12px;background:#FFF8F0;border:2px solid #FFB7C5;border-radius:12px;padding:12px;font-size:14px;line-height:1.8;color:#333;white-space:pre-wrap;word-break:break-all;}
+  .result-box-orange{border-color:#FFCF9C;background:#FFFBF0;}
+  .photo-preview{width:100%;border-radius:10px;margin-top:8px;border:2px solid #ddd;display:block;}
+
+  /* Expense */
+  .exp-row{display:flex;align-items:center;gap:10px;}
+  .exp-icon{font-size:22px;flex-shrink:0;}
+  .exp-body{flex:1;min-width:0;}
+  .exp-name{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .exp-meta{font-size:11px;color:#888;margin-top:2px;}
+  .cat-badge{padding:1px 7px;border-radius:10px;font-size:11px;}
+  .exp-amt{text-align:right;flex-shrink:0;}
+  .exp-amt-main{font-weight:700;font-size:14px;}
+  .exp-amt-sub{font-size:11px;color:#aaa;}
+  .exp-actions{display:flex;flex-direction:column;gap:4px;flex-shrink:0;}
+  .btn-edit{background:#FFF5C0;border:1.5px solid #2d2d2d;border-radius:8px;padding:4px 8px;font-size:13px;cursor:pointer;}
+  .btn-del{background:#FFE0E0;border:1.5px solid #2d2d2d;border-radius:8px;padding:4px 8px;font-size:13px;cursor:pointer;}
+
+  /* Summary */
+  .summary-row{display:flex;justify-content:space-around;margin-bottom:12px;}
+  .summary-item{text-align:center;}
+  .summary-label{font-size:11px;color:#888;}
+  .summary-val{font-size:21px;font-weight:800;color:#2d2d2d;}
+  .summary-val.pink{color:#FF8FAB;}
+  .bar-wrap{margin-bottom:5px;}
+  .bar-row{display:flex;justify-content:space-between;font-size:12px;margin-bottom:2px;}
+  .bar-bg{height:8px;background:#eee;border-radius:8px;overflow:hidden;}
+  .bar-fill{height:100%;border-radius:8px;}
+
+  /* Form inputs */
+  input,select{width:100%;margin-bottom:8px;padding:9px 12px;border-radius:10px;border:2px solid #ddd;font-size:14px;font-family:inherit;background:white;}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:#FFB7C5;}
+  .form-row{display:flex;gap:8px;margin-top:2px;}
+
+  /* Add spot dashed */
+  .add-dashed{width:100%;padding:12px;border-radius:14px;border:2.5px dashed #FFB7C5;background:white;font-weight:700;font-size:14px;cursor:pointer;color:#FF8FAB;font-family:inherit;}
+
+  /* Currency */
+  .cur-result{margin-top:10px;background:linear-gradient(135deg,#FFE8F5,#FFF5E0);border:2px solid #2d2d2d;border-radius:14px;padding:16px;text-align:center;box-shadow:3px 3px 0 #2d2d2d;}
+  .cur-result-label{font-size:13px;color:#888;}
+  .cur-result-val{font-size:30px;font-weight:800;color:#2d2d2d;letter-spacing:1px;margin:4px 0;}
+  .cur-result-rate{font-size:12px;color:#aaa;}
+  .cur-swap{padding:9px 14px;border-radius:10px;border:2px solid #2d2d2d;background:#FFB7C5;font-weight:700;cursor:pointer;box-shadow:2px 2px 0 #2d2d2d;font-size:16px;}
+  .cur-flex{display:flex;align-items:flex-end;gap:8px;margin-bottom:10px;}
+  .cur-col{flex:1;}
+  .cur-col label{font-size:12px;color:#888;display:block;margin-bottom:4px;}
+  .ref-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed #eee;font-size:13px;}
+
+  /* Bottom nav */
+  .bottom-nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:white;border-top:2.5px solid #2d2d2d;display:flex;box-shadow:0 -4px 12px rgba(0,0,0,.08);z-index:100;}
+  .nav-item{flex:1;padding:10px 4px 8px;border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-family:inherit;}
+  .nav-icon{font-size:22px;transition:transform .15s;}
+  .nav-icon.active{transform:scale(1.2);}
+  .nav-label{font-size:10px;color:#888;font-weight:400;}
+  .nav-label.active{color:#FF8FAB;font-weight:700;}
+  .nav-dot{width:20px;height:3px;border-radius:3px;background:#FFB7C5;margin-top:1px;}
+
+  /* Tabs hidden */
+  .tab-content{display:none;}
+  .tab-content.active{display:block;}
+
+  /* Loading */
+  .loading{text-align:center;padding:14px;color:#888;font-size:14px;}
+
+  /* Cloud SVG deco */
+  .cloud-deco{position:absolute;opacity:.7;pointer-events:none;}
+
+  /* Confirm dialog */
+  .confirm-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;align-items:center;justify-content:center;}
+  .confirm-overlay.show{display:flex;}
+  .confirm-box{background:white;border:2.5px solid #2d2d2d;border-radius:18px;padding:24px 20px;max-width:300px;width:90%;box-shadow:5px 5px 0 #2d2d2d;text-align:center;}
+  .confirm-box p{font-size:15px;font-weight:600;margin-bottom:16px;line-height:1.5;}
+  .confirm-btns{display:flex;gap:10px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <svg class="cloud-deco" style="top:-8px;right:-10px;width:60px;height:36px;" viewBox="0 0 60 36" fill="none">
+      <ellipse cx="30" cy="26" rx="28" ry="10" fill="white" opacity=".9"/><circle cx="18" cy="22" r="10" fill="white" opacity=".9"/><circle cx="30" cy="18" r="13" fill="white" opacity=".9"/><circle cx="42" cy="22" r="10" fill="white" opacity=".9"/>
+    </svg>
+    <svg class="cloud-deco" style="top:10px;left:-20px;width:50px;height:30px;opacity:.5;" viewBox="0 0 60 36" fill="none">
+      <ellipse cx="30" cy="26" rx="28" ry="10" fill="white" opacity=".9"/><circle cx="18" cy="22" r="10" fill="white" opacity=".9"/><circle cx="30" cy="18" r="13" fill="white" opacity=".9"/><circle cx="42" cy="22" r="10" fill="white" opacity=".9"/>
+    </svg>
+    <svg style="position:absolute;top:10px;right:52px;pointer-events:none;" width="24" height="24" viewBox="0 0 28 28" fill="none">
+      <ellipse cx="14" cy="7" rx="4" ry="6" fill="#FFB7C5" transform="rotate(0 14 14)" opacity=".85"/>
+      <ellipse cx="14" cy="7" rx="4" ry="6" fill="#FFB7C5" transform="rotate(72 14 14)" opacity=".85"/>
+      <ellipse cx="14" cy="7" rx="4" ry="6" fill="#FFCDD8" transform="rotate(144 14 14)" opacity=".85"/>
+      <ellipse cx="14" cy="7" rx="4" ry="6" fill="#FFB7C5" transform="rotate(216 14 14)" opacity=".85"/>
+      <ellipse cx="14" cy="7" rx="4" ry="6" fill="#FFCDD8" transform="rotate(288 14 14)" opacity=".85"/>
+      <circle cx="14" cy="14" r="3" fill="#FFF0F5"/>
+    </svg>
+    <div class="header-inner">
+      <span class="header-emoji">✈️</span>
+      <div>
+        <div class="header-title">帶媽咪去大阪吃吃喝喝～</div>
+        <div class="header-sub">母女之旅 💕 2025/5/14–5/18 🇯🇵</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+
+    <!-- ══ 行程 TAB ══ -->
+    <div id="tab-itinerary" class="tab-content active">
+
+      <!-- Flight -->
+      <div class="card card-blue">
+        <div class="sec-title" style="margin-bottom:10px;">
+          <span style="font-size:20px;">✈️</span>
+          <span style="font-size:15px;">航班資訊</span>
+        </div>
+        <div class="info-label">
+          <div class="info-section" style="color:#FF8FAB;">🛫 去程</div>
+          <div>🏷️ <b>台灣虎航 IT284</b></div>
+          <div>出發：2025-05-14 07:00 ・ 高雄(KHH)</div>
+          <div>抵達：2025-05-14 10:55 ・ 關西(KIX)</div>
+          <div class="divider"></div>
+          <div class="info-section" style="color:#87CEEB;">🛬 回程</div>
+          <div>🏷️ <b>台灣虎航 IT285</b></div>
+          <div>出發：2025-05-18 12:00 ・ 關西(KIX)</div>
+          <div>抵達：2025-05-18 13:30 ・ 高雄(KHH)</div>
+        </div>
+      </div>
+
+      <!-- Hotel -->
+      <div class="card">
+        <div class="sec-title" style="margin-bottom:10px;">
+          <span style="font-size:20px;">🏨</span>
+          <span style="font-size:15px;">住宿</span>
+        </div>
+        <div class="info-label">
+          <div>🏩 Montana Flat Yebisu</div>
+          <div>📍 大阪市浪速区恵美須西（恵美須町站 / 新今宮站附近）</div>
+          <div style="margin-top:4px;font-size:12px;color:#888;">🚃 搭南海電鐵從關西機場→新今宮站（約40~50分），步行7分鐘</div>
+        </div>
+        <a class="nav-btn" href="https://maps.google.com/?q=Montana+Flat+Yebisu+Osaka" target="_blank">🗺️ 開啟導航</a>
+      </div>
+
+      <!-- Day Tabs -->
+      <div class="day-tabs" id="dayTabs"></div>
+
+      <!-- Weather -->
+      <div class="weather-bar" id="weatherBar"></div>
+
+      <!-- Spots -->
+      <div id="spotsList"></div>
+
+      <!-- Add spot -->
+      <div id="addSpotForm" style="display:none;" class="card card-yellow">
+        <div style="font-weight:700;font-size:14px;margin-bottom:10px;">✨ 新增景點</div>
+        <input id="newIcon" placeholder="圖示 (emoji，如 🍜)" maxlength="4">
+        <input id="newTime" placeholder="時間（如 14:00）">
+        <input id="newName" placeholder="景點名稱 *">
+        <input id="newNote" placeholder="備註">
+        <input id="newTransport" placeholder="交通資訊（選填）">
+        <div class="form-row">
+          <button class="btn-sm" style="background:#FFB7C5;border:2px solid #2d2d2d;box-shadow:2px 2px 0 #2d2d2d;" onclick="saveSpot()">✅ 新增</button>
+          <button class="btn-sm btn-outline" onclick="document.getElementById('addSpotForm').style.display='none'">取消</button>
+        </div>
+      </div>
+      <button class="add-dashed" onclick="document.getElementById('addSpotForm').style.display='block';document.getElementById('addSpotForm').scrollIntoView({behavior:'smooth'})">＋ 新增景點</button>
+    </div>
+
+    <!-- ══ 翻譯 TAB ══ -->
+    <div id="tab-translate" class="tab-content">
+      <div class="sec-title">
+        <svg width="24" height="24" viewBox="0 0 28 28" fill="none"><ellipse cx="14" cy="7" rx="4" ry="6" fill="#FFB7C5" transform="rotate(0 14 14)" opacity=".85"/><ellipse cx="14" cy="7" rx="4" ry="6" fill="#FFB7C5" transform="rotate(72 14 14)" opacity=".85"/><ellipse cx="14" cy="7" rx="4" ry="6" fill="#FFCDD8" transform="rotate(144 14 14)" opacity=".85"/><ellipse cx="14" cy="7" rx="4" ry="6" fill="#FFB7C5" transform="rotate(216 14 14)" opacity=".85"/><ellipse cx="14" cy="7" rx="4" ry="6" fill="#FFCDD8" transform="rotate(288 14 14)" opacity=".85"/><circle cx="14" cy="14" r="3" fill="#FFF0F5"/></svg>
+        <span>翻譯小幫手</span>
+      </div>
+
+      <!-- 文字翻譯 -->
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;margin-bottom:10px;">📝 文字翻譯</div>
+
+        <!-- 翻譯模式選擇 -->
+        <div style="display:flex;gap:6px;margin-bottom:10px;">
+          <button onclick="setTransMode('zh-ja')" id="mode-zh-ja" class="mode-btn active-mode">中文→日文</button>
+          <button onclick="setTransMode('ja-zh')" id="mode-ja-zh" class="mode-btn">日文→中文</button>
+          <button onclick="setTransMode('any-ja')" id="mode-any-ja" class="mode-btn">任意→日文</button>
+        </div>
+
+        <textarea id="translateInput" placeholder="請輸入想翻譯的文字…"></textarea>
+
+        <div style="display:flex;gap:8px;margin-top:8px;">
+          <button onclick="doTranslate()" id="translateBtn" class="btn-primary" style="flex:2;margin-top:0;">🌸 翻譯</button>
+          <button onclick="openGoogle()" class="btn-primary btn-outline" style="flex:1;margin-top:0;border:2.5px solid #2d2d2d;background:#E8F5FF;font-size:13px;box-shadow:3px 3px 0 #2d2d2d;">🔍 Google</button>
+        </div>
+
+        <!-- 結果區 -->
+        <div id="translateResult" style="display:none;margin-top:14px;border-radius:14px;border:2px solid #FFB7C5;overflow:hidden;">
+          <!-- 日文 -->
+          <div style="background:#FFF0F7;padding:12px 14px;border-bottom:1.5px solid #FFB7C5;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+              <span style="font-size:11px;color:#FF8FAB;font-weight:700;">🇯🇵 日文</span>
+              <button onclick="copyText('ja')" id="copy-ja" style="font-size:11px;background:#FFE8F0;border:1.5px solid #FFB7C5;border-radius:8px;padding:2px 8px;cursor:pointer;">📋 複製</button>
+            </div>
+            <div id="res-japanese" style="font-size:18px;font-weight:700;color:#2d2d2d;line-height:1.5;"></div>
+          </div>
+          <!-- Romaji -->
+          <div id="res-romaji-wrap" style="background:#FFF8F0;padding:10px 14px;border-bottom:1.5px solid #FFE0C0;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+              <span style="font-size:11px;color:#E8A020;font-weight:700;">🔤 羅馬拼音 (Romaji)</span>
+              <button onclick="copyText('ro')" id="copy-ro" style="font-size:11px;background:#FFF0DC;border:1.5px solid #FFCF9C;border-radius:8px;padding:2px 8px;cursor:pointer;">📋 複製</button>
+            </div>
+            <div id="res-romaji" style="font-size:14px;color:#666;font-style:italic;line-height:1.6;"></div>
+          </div>
+          <!-- 補充 -->
+          <div id="res-hint-wrap" style="background:#F5FFF5;padding:10px 14px;border-bottom:1.5px solid #C8EFC8;">
+            <span style="font-size:11px;color:#4CAF50;font-weight:700;">💡 補充說明</span>
+            <div id="res-hint" style="font-size:13px;color:#555;margin-top:3px;line-height:1.5;"></div>
+          </div>
+          <!-- Google連結 -->
+          <div style="background:#F0F7FF;padding:8px 14px;display:flex;align-items:center;justify-content:space-between;">
+            <span style="font-size:11px;color:#888;">在 Google 翻譯查看更多</span>
+            <button onclick="openGoogle()" style="font-size:12px;font-weight:700;background:#4285F4;color:white;border:none;border-radius:8px;padding:4px 12px;cursor:pointer;">🌐 開啟</button>
+          </div>
+        </div>
+        <div id="translateLoading" class="loading" style="display:none;">🌸 翻譯中…</div>
+      </div>
+
+      <!-- 拍照翻譯 -->
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;margin-bottom:6px;">📸 拍照翻譯</div>
+        <div style="font-size:12px;color:#888;margin-bottom:10px;">拍下日文看板、菜單，AI 辨識並附上羅馬拼音！</div>
+        <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none;" onchange="doPhotoTranslate(this)">
+        <button class="btn-primary btn-orange" onclick="document.getElementById('photoInput').click()">📷 選取 / 拍攝圖片</button>
+        <img id="photoPreview" class="photo-preview" style="display:none;">
+        <div id="photoLoading" class="loading" style="display:none;">🔍 辨識翻譯中…</div>
+        <div id="photoResult"></div>
+        <button id="photoCameraBtn" onclick="window.open('https://translate.google.com/?op=camera','_blank')" style="display:none;width:100%;margin-top:10px;padding:10px;border-radius:12px;border:2px solid #4285F4;background:#F0F7FF;font-weight:700;font-size:13px;cursor:pointer;color:#4285F4;">🌐 用 Google 翻譯鏡頭繼續翻</button>
+      </div>
+    </div>
+
+    <!-- ══ 記帳 TAB ══ -->
+    <div id="tab-expense" class="tab-content">
+      <div class="sec-title">
+        <span style="font-size:24px;">💴</span>
+        <span>旅行記帳本</span>
+      </div>
+
+      <!-- Summary -->
+      <div class="card card-pink">
+        <div class="summary-row">
+          <div class="summary-item">
+            <div class="summary-label">總花費（日圓）</div>
+            <div class="summary-val" id="totalJPY">¥0</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-label">約新台幣</div>
+            <div class="summary-val pink" id="totalTWD">NT$0</div>
+          </div>
+        </div>
+        <div id="catBars"></div>
+      </div>
+
+      <!-- Receipt scan -->
+      <div class="card">
+        <div style="font-size:13px;font-weight:700;margin-bottom:6px;">🧾 收據 / 購物清單拍照翻譯</div>
+        <input type="file" id="receiptInput" accept="image/*" capture="environment" style="display:none;" onchange="doReceiptScan(this)">
+        <button class="btn-primary btn-orange" onclick="document.getElementById('receiptInput').click()">📷 拍攝收據 / 購物清單</button>
+        <img id="receiptPreview" class="photo-preview" style="display:none;">
+        <div id="receiptLoading" class="loading" style="display:none;">🔍 分析中…</div>
+        <div id="receiptResult" style="display:none;" class="result-box result-box-orange"></div>
+      </div>
+
+      <!-- Expense list -->
+      <div id="expenseList"></div>
+
+      <!-- Edit form (hidden) -->
+      <div id="editExpForm" style="display:none;" class="card card-yellow">
+        <div style="font-weight:700;font-size:13px;margin-bottom:8px;">✏️ 編輯費用</div>
+        <input id="editIcon" placeholder="圖示">
+        <input id="editItem" placeholder="品項名稱">
+        <input id="editAmount" type="number" placeholder="金額">
+        <input id="editDate" type="date">
+        <select id="editCurrency">
+          <option value="JPY">🇯🇵 日圓 (JPY)</option>
+          <option value="TWD">🇹🇼 新台幣 (TWD)</option>
+          <option value="USD">🇺🇸 美元 (USD)</option>
+          <option value="EUR">🇪🇺 歐元 (EUR)</option>
+          <option value="KRW">🇰🇷 韓元 (KRW)</option>
+          <option value="HKD">🇭🇰 港幣 (HKD)</option>
+        </select>
+        <select id="editCategory">
+          <option>餐飲</option><option>交通</option><option>住宿</option>
+          <option>紀念品</option><option>購物</option><option>娛樂</option><option>其他</option>
+        </select>
+        <div class="form-row">
+          <button class="btn-sm" style="background:#FFB7C5;border:2px solid #2d2d2d;box-shadow:2px 2px 0 #2d2d2d;" onclick="saveEditExp()">✅ 儲存</button>
+          <button class="btn-sm btn-outline" onclick="cancelEditExp()">取消</button>
+        </div>
+      </div>
+
+      <!-- Add expense form -->
+      <div id="addExpForm" style="display:none;" class="card card-yellow">
+        <div style="font-weight:700;margin-bottom:10px;">✨ 新增費用</div>
+        <input id="newExpIcon" placeholder="圖示（如 🍜）" maxlength="4">
+        <input id="newExpItem" placeholder="品項名稱 *">
+        <input id="newExpAmount" type="number" placeholder="金額 *">
+        <input id="newExpDate" type="date">
+        <select id="newExpCurrency">
+          <option value="JPY">🇯🇵 日圓 (JPY)</option>
+          <option value="TWD">🇹🇼 新台幣 (TWD)</option>
+          <option value="USD">🇺🇸 美元 (USD)</option>
+          <option value="EUR">🇪🇺 歐元 (EUR)</option>
+          <option value="KRW">🇰🇷 韓元 (KRW)</option>
+          <option value="HKD">🇭🇰 港幣 (HKD)</option>
+        </select>
+        <select id="newExpCat">
+          <option>餐飲</option><option>交通</option><option>住宿</option>
+          <option>紀念品</option><option>購物</option><option>娛樂</option><option>其他</option>
+        </select>
+        <div class="form-row">
+          <button class="btn-sm" style="background:#FFB7C5;border:2px solid #2d2d2d;box-shadow:2px 2px 0 #2d2d2d;" onclick="addExpense()">✅ 新增</button>
+          <button class="btn-sm btn-outline" onclick="document.getElementById('addExpForm').style.display='none'">取消</button>
+        </div>
+      </div>
+
+      <button class="add-dashed" onclick="showAddExp()" style="margin-top:4px;">＋ 新增費用</button>
+    </div>
+
+    <!-- ══ 匯率 TAB ══ -->
+    <div id="tab-currency" class="tab-content">
+      <div class="sec-title">
+        <span style="font-size:24px;">💱</span>
+        <span>匯率換算</span>
+      </div>
+
+      <div class="card">
+        <div style="font-size:13px;color:#888;margin-bottom:10px;">✏️ 可自訂當日匯率（覆蓋預設值）</div>
+        <input id="customRate" type="number" placeholder="自訂匯率（如 4.58 表示1TWD=4.58JPY）" oninput="calcCurrency()">
+
+        <div class="cur-flex">
+          <div class="cur-col">
+            <label>從</label>
+            <select id="fromCur" onchange="calcCurrency()">
+              <option value="TWD">🇹🇼 TWD</option>
+              <option value="JPY">🇯🇵 JPY</option>
+              <option value="USD">🇺🇸 USD</option>
+              <option value="EUR">🇪🇺 EUR</option>
+              <option value="KRW">🇰🇷 KRW</option>
+              <option value="HKD">🇭🇰 HKD</option>
+            </select>
+          </div>
+          <button class="cur-swap" onclick="swapCurrency()">⇄</button>
+          <div class="cur-col">
+            <label>到</label>
+            <select id="toCur" onchange="calcCurrency()">
+              <option value="TWD">🇹🇼 TWD</option>
+              <option value="JPY" selected>🇯🇵 JPY</option>
+              <option value="USD">🇺🇸 USD</option>
+              <option value="EUR">🇪🇺 EUR</option>
+              <option value="KRW">🇰🇷 KRW</option>
+              <option value="HKD">🇭🇰 HKD</option>
+            </select>
+          </div>
+        </div>
+
+        <label style="font-size:12px;color:#888;margin-bottom:4px;display:block;">金額</label>
+        <input id="fromAmt" type="number" value="1000" style="font-size:20px;font-weight:700;" oninput="calcCurrency()">
+
+        <div class="cur-result">
+          <div class="cur-result-label" id="curLabel">🇹🇼 1000 TWD =</div>
+          <div class="cur-result-val" id="curResult">🇯🇵 4580.00 JPY</div>
+          <div class="cur-result-rate" id="curRate">匯率：1 TWD = 4.58 JPY</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:700;font-size:13px;margin-bottom:10px;">🌸 常用換算參考（1 JPY =）</div>
+        <div class="ref-row"><span>🇹🇼 新台幣</span><span id="ref-TWD" style="font-weight:600;"></span></div>
+        <div class="ref-row"><span>🇺🇸 美元</span><span id="ref-USD" style="font-weight:600;"></span></div>
+        <div class="ref-row"><span>🇪🇺 歐元</span><span id="ref-EUR" style="font-weight:600;"></span></div>
+        <div class="ref-row"><span>🇰🇷 韓元</span><span id="ref-KRW" style="font-weight:600;"></span></div>
+        <div class="ref-row" style="border:none;"><span>🇭🇰 港幣</span><span id="ref-HKD" style="font-weight:600;"></span></div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item" onclick="switchTab('itinerary')" id="nav-itinerary">
+      <span class="nav-icon active" id="ni-itinerary">🗺️</span>
+      <span class="nav-label active" id="nl-itinerary">行程</span>
+      <div class="nav-dot" id="nd-itinerary"></div>
+    </button>
+    <button class="nav-item" onclick="switchTab('translate')" id="nav-translate">
+      <span class="nav-icon" id="ni-translate">🌸</span>
+      <span class="nav-label" id="nl-translate">翻譯</span>
+      <div class="nav-dot" id="nd-translate" style="display:none;"></div>
+    </button>
+    <button class="nav-item" onclick="switchTab('expense')" id="nav-expense">
+      <span class="nav-icon" id="ni-expense">💴</span>
+      <span class="nav-label" id="nl-expense">記帳</span>
+      <div class="nav-dot" id="nd-expense" style="display:none;"></div>
+    </button>
+    <button class="nav-item" onclick="switchTab('currency')" id="nav-currency">
+      <span class="nav-icon" id="ni-currency">💱</span>
+      <span class="nav-label" id="nl-currency">匯率</span>
+      <div class="nav-dot" id="nd-currency" style="display:none;"></div>
+    </button>
+  </nav>
+
+  <!-- Confirm Dialog -->
+  <div class="confirm-overlay" id="confirmOverlay">
+    <div class="confirm-box">
+      <p id="confirmMsg">確定要刪除嗎？</p>
+      <div class="confirm-btns">
+        <button class="btn-sm" style="background:#FFE0E0;border:2px solid #2d2d2d;box-shadow:2px 2px 0 #2d2d2d;" onclick="confirmOk()">🗑️ 刪除</button>
+        <button class="btn-sm btn-outline" onclick="confirmCancel()">取消</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+// ── Data ─────────────────────────────────────────────────────────────────────
+const RATES = { TWD:1, JPY:4.58, USD:0.031, EUR:0.029, KRW:41.5, HKD:0.243 };
+const CUR_FLAGS = { TWD:"🇹🇼", JPY:"🇯🇵", USD:"🇺🇸", EUR:"🇪🇺", KRW:"🇰🇷", HKD:"🇭🇰" };
+const CAT_COLORS = { "餐飲":"#FFB347","交通":"#87CEEB","住宿":"#DDA0DD","紀念品":"#FFB7C5","購物":"#98FB98","娛樂":"#F0E68C","其他":"#D3D3D3" };
+
+const WEATHER = {
+  "2025-05-14":{ icon:"⛅", desc:"多雲轉晴", high:25, low:18 },
+  "2025-05-15":{ icon:"☀️", desc:"晴天", high:27, low:19 },
+  "2025-05-16":{ icon:"🌤️", desc:"晴時多雲", high:26, low:18 },
+  "2025-05-17":{ icon:"☀️", desc:"晴天", high:28, low:20 },
+  "2025-05-18":{ icon:"⛅", desc:"多雲", high:24, low:17 },
+};
+
+const DAYS = [
+  { date:"2025-05-14", spots:[
+    { id:1, time:"11:30", name:"關西機場→新今宮站", note:"搭南海電鐵，約40~50分鐘", icon:"🚃", transport:"南海電鐵 Nankai｜關西機場站→新今宮站" },
+    { id:2, time:"12:30", name:"Montana Flat Yebisu 寄放行李", note:"步行約7分鐘至飯店", icon:"🏨", transport:"步行7分鐘" },
+    { id:3, time:"13:00", name:"新世界・通天閣商圈", note:"飯店下樓即是！吃八重勝串炸名店🍢，玩TOWER SLIDER大型溜滑梯", icon:"🗼", transport:"飯店步行即達" },
+    { id:4, time:"17:30", name:"阿倍野 Harukas 300 夜景", note:"日本最高摩天大樓，60樓360度俯瞰大阪✨，回飯店超近", icon:"🌃", transport:"步行約15分鐘，或搭御堂筋線「動物園前」→「天王寺」" },
+    { id:5, time:"20:30", name:"返回飯店休息", note:"明天早出發，好好睡一覺💤", icon:"😴", transport:"步行至飯店" },
+  ]},
+  { date:"2025-05-15", spots:[
+    { id:6, time:"08:30", name:"大阪城公園・天守閣", note:"漫步公園，登天守閣俯瞰大阪🏯", icon:"🏯", transport:"堺筋線「恵美須町」→「南森町」，轉谷町線→「谷町四丁目」，或JR環狀線→「大阪城公園」" },
+    { id:7, time:"12:00", name:"梅田商圈 (Umeda)", note:"無印良品旗艦店、LUCUA、大丸百貨！Pokémon Center🎮 & 任天堂Store", icon:"🛍️", transport:"谷町線→「東梅田」，或JR→「大阪站」" },
+    { id:8, time:"18:30", name:"梅田藍天大廈・空中庭園展望台", note:"露天頂層步道，欣賞璀璨大阪市區夜景🌉", icon:"🌆", transport:"步行至梅田藍天大廈" },
+    { id:9, time:"21:00", name:"返回飯店", note:"購物戰利品整理一下🛍️", icon:"🏨", transport:"地鐵返回飯店" },
+  ]},
+  { date:"2025-05-16", spots:[
+    { id:10, time:"09:30", name:"勝尾寺（必勝達摩之寺）", note:"滿山遍野的達摩超壯觀！祈求必勝🎎，媽媽一定喜歡", icon:"🎎", transport:"御堂筋線→「箕面萱野站」（終點），轉阪急巴士30號直達勝尾寺" },
+    { id:11, time:"14:00", name:"箕面大瀑布（選配）", note:"體力許可可繞去！吃特色「炸楓葉」🍁超特別", icon:"💧", transport:"步行至箕面公園" },
+    { id:12, time:"17:30", name:"難波・道頓堀", note:"晚餐吃拉麵🍜，在心齋橋「固力果跑跑人」打卡拍照📸", icon:"🌟", transport:"地鐵回「難波」或「日本橋」" },
+    { id:13, time:"21:00", name:"返回飯店", note:"今天腳一定很酸，好好休息💕", icon:"🏨", transport:"地鐵至新今宮" },
+  ]},
+  { date:"2025-05-17", spots:[
+    { id:14, time:"08:30", name:"黑門市場", note:"大阪人的廚房！新鮮海鮮、和牛早餐🦪🥩，一定要去！", icon:"🦞", transport:"步行約15分鐘，或堺筋線一站至「日本橋」" },
+    { id:15, time:"12:00", name:"心齋橋・美國村購物", note:"藥妝、服飾瘋狂買💊💄，美國村逛古著店喝咖啡☕", icon:"💅", transport:"步行至心齋橋筋" },
+    { id:16, time:"16:00", name:"難波八阪神社", note:"巨大獅子頭舞台超震撼！離飯店不遠，必去打卡📸", icon:"⛩️", transport:"步行至難波八阪神社" },
+    { id:17, time:"21:00", name:"返回飯店整理行李", note:"最後一晚！把戰利品好好打包🧳", icon:"🧳", transport:"步行至飯店" },
+  ]},
+  { date:"2025-05-18", spots:[
+    { id:18, time:"08:30", name:"退房", note:"確認行李，和飯店說再見👋", icon:"🏨", transport:"" },
+    { id:19, time:"09:00", name:"新今宮站→關西機場", note:"建議09:12或09:32的南海電鐵，建議提早！", icon:"🚃", transport:"南海電鐵 Nankai｜新今宮站→關西機場站（約40分）" },
+    { id:20, time:"10:00", name:"關西機場辦理登機", note:"IT285 12:00起飛，提早2小時報到，好好逛免稅店🛍️", icon:"✈️", transport:"機場內步行" },
+    { id:21, time:"12:00", name:"起飛回高雄", note:"帶著滿滿回憶和戰利品回家✈️💕 下次還要來！", icon:"🏠", transport:"IT285 KIX→KHH" },
+  ]},
+];
+
+let expenses = [
+  { id:1, item:"串炸（八重勝）", amount:2200, currency:"JPY", category:"餐飲", date:"2025-05-14", icon:"🍢" },
+  { id:2, item:"通天閣 TOWER SLIDER", amount:1000, currency:"JPY", category:"娛樂", date:"2025-05-14", icon:"🎡" },
+  { id:3, item:"Harukas 300 門票（2人）", amount:3200, currency:"JPY", category:"娛樂", date:"2025-05-14", icon:"🌃" },
+  { id:4, item:"大阪城天守閣入館（2人）", amount:1600, currency:"JPY", category:"娛樂", date:"2025-05-15", icon:"🏯" },
+  { id:5, item:"梅田百貨購物", amount:8500, currency:"JPY", category:"購物", date:"2025-05-15", icon:"🛍️" },
+  { id:6, item:"勝尾寺入山費（2人）", amount:800, currency:"JPY", category:"娛樂", date:"2025-05-16", icon:"🎎" },
+  { id:7, item:"道頓堀拉麵晚餐", amount:2400, currency:"JPY", category:"餐飲", date:"2025-05-16", icon:"🍜" },
+  { id:8, item:"黑門市場海鮮早餐", amount:3800, currency:"JPY", category:"餐飲", date:"2025-05-17", icon:"🦞" },
+  { id:9, item:"心齋橋藥妝", amount:12000, currency:"JPY", category:"購物", date:"2025-05-17", icon:"💊" },
+  { id:10, item:"地鐵交通費（5天）", amount:4500, currency:"JPY", category:"交通", date:"2025-05-14", icon:"🚇" },
+];
+
+let selectedDay = 0;
+let nextId = 100;
+let editingExpId = null;
+let pendingDeleteId = null;
+let confirmCallback = null;
+
+// ── Tab switching ─────────────────────────────────────────────────────────────
+function switchTab(name) {
+  ['itinerary','translate','expense','currency'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===name);
+    document.getElementById('ni-'+t).classList.toggle('active', t===name);
+    document.getElementById('nl-'+t).classList.toggle('active', t===name);
+    document.getElementById('nd-'+t).style.display = t===name ? 'block' : 'none';
+  });
+  if (name==='expense') renderExpenses();
+  if (name==='currency') { calcCurrency(); renderRefs(); }
+}
+
+// ── Itinerary ────────────────────────────────────────────────────────────────
+function renderDayTabs() {
+  const container = document.getElementById('dayTabs');
+  container.innerHTML = '';
+  DAYS.forEach((d,i) => {
+    const dt = new Date(d.date+'T00:00:00');
+    const label = `${dt.getMonth()+1}/${dt.getDate()}`;
+    const btn = document.createElement('button');
+    btn.className = 'day-tab' + (i===selectedDay?' active':'');
+    btn.innerHTML = `Day ${i+1}<br><span style="font-size:11px;font-weight:400;">${label}</span>`;
+    btn.onclick = () => { selectedDay=i; renderDayTabs(); renderWeather(); renderSpots(); };
+    container.appendChild(btn);
+  });
+}
+
+function renderWeather() {
+  const date = DAYS[selectedDay].date;
+  const w = WEATHER[date];
+  const dt = new Date(date+'T00:00:00');
+  const wb = document.getElementById('weatherBar');
+  if (w) {
+    wb.style.display = 'flex';
+    wb.innerHTML = `<span class="weather-icon">${w.icon}</span><div class="weather-info"><b>${dt.getMonth()+1}月${dt.getDate()}日</b> 天氣預報<br>${w.desc}｜高 ${w.high}°C・低 ${w.low}°C</div>`;
+  } else { wb.style.display='none'; }
+}
+
+function renderSpots() {
+  const list = document.getElementById('spotsList');
+  list.innerHTML = '';
+  DAYS[selectedDay].spots.forEach(s => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.marginBottom = '10px';
+    card.innerHTML = `
+      <div class="spot-card">
+        <div class="spot-icon">${s.icon}</div>
+        <div class="spot-body">
+          <div class="spot-name">${s.name}</div>
+          ${s.time ? `<div class="spot-time">🕐 ${s.time}</div>` : ''}
+          ${s.note ? `<div class="spot-note">📝 ${s.note}</div>` : ''}
+          ${s.transport ? `<div class="spot-transport">🚃 ${s.transport}</div>` : ''}
+        </div>
+        <button class="spot-del" onclick="deleteSpot(${s.id})">×</button>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+function deleteSpot(id) {
+  DAYS[selectedDay].spots = DAYS[selectedDay].spots.filter(s=>s.id!==id);
+  renderSpots();
+}
+
+function saveSpot() {
+  const name = document.getElementById('newName').value.trim();
+  if (!name) { alert('請輸入景點名稱'); return; }
+  DAYS[selectedDay].spots.push({
+    id: nextId++,
+    icon: document.getElementById('newIcon').value.trim() || '📍',
+    time: document.getElementById('newTime').value.trim(),
+    name,
+    note: document.getElementById('newNote').value.trim(),
+    transport: document.getElementById('newTransport').value.trim(),
+  });
+  ['newIcon','newTime','newName','newNote','newTransport'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('addSpotForm').style.display='none';
+  renderSpots();
+}
+
+// ── Translate ────────────────────────────────────────────────────────────────
+const TRANS_MODES = {
+  'zh-ja': { placeholder:'請輸入中文…', sys:`你是專業中日翻譯。請將輸入的中文翻譯成自然的日文。只回傳JSON，不要有其他文字：{"japanese":"日文翻譯","romaji":"羅馬拼音","hint":"補充說明（20字內，無則空字串）"}`, sl:'zh-TW', tl:'ja' },
+  'ja-zh': { placeholder:'請輸入日文…', sys:`你是專業中日翻譯。請將輸入的日文翻譯成繁體中文，並提供羅馬拼音。只回傳JSON，不要有其他文字：{"japanese":"原始日文","romaji":"羅馬拼音","hint":"繁體中文翻譯"}`, sl:'ja', tl:'zh-TW' },
+  'any-ja': { placeholder:'輸入任何語言…', sys:`你是專業翻譯。請將任何語言翻譯成自然日文。只回傳JSON，不要有其他文字：{"japanese":"日文翻譯","romaji":"羅馬拼音","hint":"補充說明（20字內，無則空字串）"}`, sl:'auto', tl:'ja' },
+};
+let transMode = 'zh-ja';
+let lastTranslated = {};
+
+function setTransMode(mode) {
+  transMode = mode;
+  ['zh-ja','ja-zh','any-ja'].forEach(m => {
+    document.getElementById('mode-'+m).classList.toggle('active-mode', m===mode);
+  });
+  document.getElementById('translateInput').placeholder = TRANS_MODES[mode].placeholder;
+  document.getElementById('translateResult').style.display = 'none';
+}
+
+function openGoogle() {
+  const text = document.getElementById('translateInput').value.trim();
+  const { sl, tl } = TRANS_MODES[transMode];
+  window.open(`https://translate.google.com/?sl=${sl}&tl=${tl}&text=${encodeURIComponent(text)}&op=translate`, '_blank');
+}
+
+function copyText(key) {
+  const textMap = { ja: lastTranslated.japanese, ro: lastTranslated.romaji };
+  const text = textMap[key] || '';
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-'+key);
+    btn.textContent = '✅ 已複製';
+    setTimeout(() => btn.textContent = '📋 複製', 1800);
+  }).catch(() => {});
+}
+
+async function doTranslate() {
+  const text = document.getElementById('translateInput').value.trim();
+  if (!text) return;
+  const btn = document.getElementById('translateBtn');
+  btn.textContent = '翻譯中 🌸…'; btn.disabled = true;
+  document.getElementById('translateResult').style.display = 'none';
+  document.getElementById('translateLoading').style.display = 'block';
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514', max_tokens:1000,
+        system: TRANS_MODES[transMode].sys,
+        messages:[{role:'user',content:text}]
+      })
+    });
+    const data = await r.json();
+    const raw = (data.content?.[0]?.text || '{}').replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(raw);
+    lastTranslated = parsed;
+    document.getElementById('res-japanese').textContent = parsed.japanese || '翻譯失敗';
+    document.getElementById('res-romaji').textContent = parsed.romaji || '';
+    document.getElementById('res-romaji-wrap').style.display = parsed.romaji ? 'block' : 'none';
+    document.getElementById('res-hint').textContent = parsed.hint || '';
+    document.getElementById('res-hint-wrap').style.display = parsed.hint ? 'block' : 'none';
+    document.getElementById('copy-ja').textContent = '📋 複製';
+    document.getElementById('copy-ro').textContent = '📋 複製';
+    document.getElementById('translateResult').style.display = 'block';
+  } catch(e) {
+    lastTranslated = { japanese:'翻譯失敗，請稍後再試', romaji:'', hint:'' };
+    document.getElementById('res-japanese').textContent = '翻譯失敗，請稍後再試';
+    document.getElementById('res-romaji-wrap').style.display = 'none';
+    document.getElementById('res-hint-wrap').style.display = 'none';
+    document.getElementById('translateResult').style.display = 'block';
+  }
+  document.getElementById('translateLoading').style.display = 'none';
+  btn.textContent = '🌸 翻譯'; btn.disabled = false;
+}
+
+function doPhotoTranslate(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async ev => {
+    const b64 = ev.target.result.split(',')[1];
+    document.getElementById('photoPreview').src = ev.target.result;
+    document.getElementById('photoPreview').style.display = 'block';
+    document.getElementById('photoResult').innerHTML = '';
+    document.getElementById('photoCameraBtn').style.display = 'none';
+    document.getElementById('photoLoading').style.display = 'block';
+    try {
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514', max_tokens:1500,
+          system:'請分析圖片中所有日文文字。對每段文字提供翻譯，只回傳JSON陣列，不要有其他文字：[{"original":"原文","chinese":"繁體中文翻譯","romaji":"羅馬拼音"}]',
+          messages:[{role:'user',content:[
+            {type:'image',source:{type:'base64',media_type:file.type,data:b64}},
+            {type:'text',text:'請翻譯圖片中的日文'}
+          ]}]
+        })
+      });
+      const data = await r.json();
+      const raw = (data.content?.[0]?.text || '[]').replace(/```json|```/g,'').trim();
+      const items = JSON.parse(raw);
+      const container = document.getElementById('photoResult');
+      container.innerHTML = '';
+      items.forEach((item, i) => {
+        container.innerHTML += `
+          <div style="margin-top:10px;border-radius:12px;border:2px solid #FFB7C5;overflow:hidden;">
+            <div style="background:#FFF0F7;padding:9px 12px;border-bottom:1px solid #FFE0EC;">
+              <div style="font-size:11px;color:#FF8FAB;font-weight:700;margin-bottom:2px;">🇯🇵 原文</div>
+              <div style="font-size:16px;font-weight:700;">${item.original}</div>
+            </div>
+            ${item.romaji ? `<div style="background:#FFF8F0;padding:7px 12px;border-bottom:1px solid #FFE8C0;">
+              <div style="font-size:11px;color:#E8A020;font-weight:700;margin-bottom:1px;">🔤 Romaji</div>
+              <div style="font-size:13px;color:#666;font-style:italic;">${item.romaji}</div>
+            </div>` : ''}
+            <div style="background:#F5FFF5;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <div style="font-size:11px;color:#4CAF50;font-weight:700;margin-bottom:1px;">🇹🇼 中文</div>
+                <div style="font-size:14px;color:#333;">${item.chinese}</div>
+              </div>
+              <button onclick="navigator.clipboard.writeText('${item.original.replace(/'/g,"\\'")}').then(()=>{this.textContent='✅';setTimeout(()=>this.textContent='📋',1500)})" style="font-size:13px;background:#FFE8F0;border:1.5px solid #FFB7C5;border-radius:8px;padding:4px 8px;cursor:pointer;">📋</button>
+            </div>
+          </div>`;
+      });
+      document.getElementById('photoCameraBtn').style.display = 'block';
+    } catch(e) {
+      document.getElementById('photoResult').innerHTML = '<div class="result-box" style="margin-top:8px;">辨識失敗，請重試</div>';
+    }
+    document.getElementById('photoLoading').style.display='none';
+  };
+  reader.readAsDataURL(file);
+}
+
+function doReceiptScan(input) {
+  const file = input.files[0]; if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async ev => {
+    const b64 = ev.target.result.split(',')[1];
+    document.getElementById('receiptPreview').src = ev.target.result;
+    document.getElementById('receiptPreview').style.display = 'block';
+    document.getElementById('receiptResult').style.display = 'none';
+    document.getElementById('receiptLoading').style.display = 'block';
+    try {
+      const r = await fetch('https://api.anthropic.com/v1/messages', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514', max_tokens:1000,
+          system:'請分析這張收據或購物清單圖片，列出所有品項、數量、價格，並翻譯成繁體中文。最後加上總計。',
+          messages:[{role:'user',content:[
+            {type:'image',source:{type:'base64',media_type:file.type,data:b64}},
+            {type:'text',text:'請分析這張收據/購物清單'}
+          ]}]
+        })
+      });
+      const data = await r.json();
+      document.getElementById('receiptResult').textContent = data.content?.[0]?.text || '無法識別';
+    } catch { document.getElementById('receiptResult').textContent = '識別失敗'; }
+    document.getElementById('receiptLoading').style.display='none';
+    document.getElementById('receiptResult').style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+
+// ── Expenses ─────────────────────────────────────────────────────────────────
+function toJPY(amount, currency) { return amount / RATES[currency] * RATES['JPY']; }
+function toTWD(amount, currency) { return amount / RATES[currency]; }
+
+function renderExpenses() {
+  // Summary
+  const totalJPY = expenses.reduce((s,e)=>s+toJPY(e.amount,e.currency),0);
+  const totalTWD = expenses.reduce((s,e)=>s+toTWD(e.amount,e.currency),0);
+  document.getElementById('totalJPY').textContent = '¥'+Math.round(totalJPY).toLocaleString();
+  document.getElementById('totalTWD').textContent = 'NT$'+Math.round(totalTWD).toLocaleString();
+
+  // Category bars
+  const cats = ['餐飲','交通','住宿','紀念品','購物','娛樂','其他'];
+  const catTotals = cats.map(c=>({ cat:c, total:expenses.filter(e=>e.category===c).reduce((s,e)=>s+toJPY(e.amount,e.currency),0) })).filter(c=>c.total>0);
+  const bars = document.getElementById('catBars');
+  bars.innerHTML = catTotals.map(c=>`
+    <div class="bar-wrap">
+      <div class="bar-row"><span>${c.cat}</span><span>¥${Math.round(c.total).toLocaleString()}</span></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${Math.min(100,(c.total/totalJPY)*100)}%;background:${CAT_COLORS[c.cat]};"></div></div>
+    </div>`).join('');
+
+  // List
+  const list = document.getElementById('expenseList');
+  list.innerHTML = '';
+  expenses.forEach(e => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.marginBottom = '10px';
+    const sym = e.currency==='JPY'?'¥':'$';
+    card.innerHTML = `
+      <div class="exp-row">
+        <span class="exp-icon">${e.icon}</span>
+        <div class="exp-body">
+          <div class="exp-name">${e.item}</div>
+          <div class="exp-meta">${e.date} ・ <span class="cat-badge" style="background:${CAT_COLORS[e.category]}">${e.category}</span></div>
+        </div>
+        <div class="exp-amt">
+          <div class="exp-amt-main">${sym}${e.amount.toLocaleString()}</div>
+          <div class="exp-amt-sub">≈ NT$${Math.round(toTWD(e.amount,e.currency)).toLocaleString()}</div>
+        </div>
+        <div class="exp-actions">
+          <button class="btn-edit" onclick="startEditExp(${e.id})">✏️</button>
+          <button class="btn-del" onclick="askDeleteExp(${e.id})">🗑️</button>
+        </div>
+      </div>`;
+    list.appendChild(card);
+  });
+}
+
+function showAddExp() {
+  cancelEditExp();
+  const f = document.getElementById('addExpForm');
+  f.style.display = f.style.display==='block' ? 'none' : 'block';
+  document.getElementById('newExpDate').value = new Date().toISOString().slice(0,10);
+  if (f.style.display==='block') f.scrollIntoView({behavior:'smooth'});
+}
+
+function addExpense() {
+  const item = document.getElementById('newExpItem').value.trim();
+  const amount = parseFloat(document.getElementById('newExpAmount').value);
+  if (!item || isNaN(amount)) { alert('請填寫品項名稱和金額'); return; }
+  expenses.push({
+    id: nextId++,
+    icon: document.getElementById('newExpIcon').value.trim() || '💴',
+    item, amount,
+    currency: document.getElementById('newExpCurrency').value,
+    category: document.getElementById('newExpCat').value,
+    date: document.getElementById('newExpDate').value || new Date().toISOString().slice(0,10),
+  });
+  ['newExpIcon','newExpItem','newExpAmount'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('addExpForm').style.display='none';
+  renderExpenses();
+}
+
+function startEditExp(id) {
+  editingExpId = id;
+  const e = expenses.find(x=>x.id===id);
+  document.getElementById('editIcon').value = e.icon;
+  document.getElementById('editItem').value = e.item;
+  document.getElementById('editAmount').value = e.amount;
+  document.getElementById('editDate').value = e.date;
+  document.getElementById('editCurrency').value = e.currency;
+  document.getElementById('editCategory').value = e.category;
+  document.getElementById('addExpForm').style.display='none';
+  const f = document.getElementById('editExpForm');
+  f.style.display='block';
+  f.scrollIntoView({behavior:'smooth'});
+}
+
+function saveEditExp() {
+  const item = document.getElementById('editItem').value.trim();
+  const amount = parseFloat(document.getElementById('editAmount').value);
+  if (!item || isNaN(amount)) { alert('請填寫品項名稱和金額'); return; }
+  expenses = expenses.map(e => e.id===editingExpId ? {
+    ...e,
+    icon: document.getElementById('editIcon').value.trim() || e.icon,
+    item, amount,
+    date: document.getElementById('editDate').value || e.date,
+    currency: document.getElementById('editCurrency').value,
+    category: document.getElementById('editCategory').value,
+  } : e);
+  cancelEditExp();
+  renderExpenses();
+}
+
+function cancelEditExp() {
+  editingExpId = null;
+  document.getElementById('editExpForm').style.display='none';
+}
+
+function askDeleteExp(id) {
+  pendingDeleteId = id;
+  const e = expenses.find(x=>x.id===id);
+  document.getElementById('confirmMsg').textContent = `確定要刪除「${e.item}」嗎？`;
+  confirmCallback = () => {
+    expenses = expenses.filter(x=>x.id!==pendingDeleteId);
+    renderExpenses();
+  };
+  document.getElementById('confirmOverlay').classList.add('show');
+}
+
+function confirmOk() {
+  if (confirmCallback) confirmCallback();
+  confirmCallback = null;
+  document.getElementById('confirmOverlay').classList.remove('show');
+}
+function confirmCancel() {
+  confirmCallback = null;
+  pendingDeleteId = null;
+  document.getElementById('confirmOverlay').classList.remove('show');
+}
+
+// ── Currency ──────────────────────────────────────────────────────────────────
+function calcCurrency() {
+  const from = document.getElementById('fromCur').value;
+  const to = document.getElementById('toCur').value;
+  const amt = parseFloat(document.getElementById('fromAmt').value) || 0;
+  const custom = parseFloat(document.getElementById('customRate').value);
+  let rate = isNaN(custom) ? RATES[to]/RATES[from] : custom;
+  const result = (amt * rate).toFixed(2);
+  document.getElementById('curLabel').textContent = `${CUR_FLAGS[from]} ${amt} ${from} =`;
+  document.getElementById('curResult').textContent = `${CUR_FLAGS[to]} ${parseFloat(result).toLocaleString()} ${to}`;
+  document.getElementById('curRate').textContent = `匯率：1 ${from} = ${isNaN(custom)?rate.toFixed(4):custom} ${to}`;
+}
+
+function swapCurrency() {
+  const f = document.getElementById('fromCur');
+  const t = document.getElementById('toCur');
+  const tmp = f.value; f.value=t.value; t.value=tmp;
+  document.getElementById('customRate').value='';
+  calcCurrency();
+}
+
+function renderRefs() {
+  ['TWD','USD','EUR','KRW','HKD'].forEach(c=>{
+    document.getElementById('ref-'+c).textContent = (1/RATES['JPY']*RATES[c]).toFixed(4)+' '+c;
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+renderDayTabs();
+renderWeather();
+renderSpots();
+renderExpenses();
+calcCurrency();
+renderRefs();
+
+// Allow Enter key in translate
+document.getElementById('translateInput').addEventListener('keydown', e => {
+  if (e.key==='Enter' && e.ctrlKey) doTranslate();
+});
+</script>
+</body>
+</html>
